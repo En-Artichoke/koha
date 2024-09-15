@@ -1,94 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:koha/features/categories/widget/categories_tab.dart';
+import 'package:koha/core/widgets/info_row.dart';
+import 'package:koha/features/weather/widget/weather_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  int _bottomNavIndex = 0;
-  final List<IconData> iconList = [
-    Icons.home,
-    Icons.search,
-    Icons.favorite,
-    Icons.person,
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.menu, color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
-        backgroundColor: const Color(0xFF1E1E1E),
-      ),
       body: Container(
         decoration: const BoxDecoration(
           color: Colors.black,
         ),
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'Welcome to Koha',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              const CategoryTabs(),
+              const SizedBox(height: 20),
+              InfoRow(
+                leftWidget: const Text('Karikatura e ditës',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: 'Avenir LT 55 Roman',
+                      fontWeight: FontWeight.w700,
+                    )),
+                rightWidget: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Image.asset('assets/image/karikatura.png'),
                 ),
+                onTap: () {},
+                backgroundColor: const Color(0xFFE64A19),
               ),
-              SizedBox(height: 20),
-              Text(
-                'Current tab: ${_getTabName(_bottomNavIndex)}',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white70,
-                ),
+              const SizedBox(height: 20),
+              const WeatherWidget(),
+              const SizedBox(height: 20),
+              InfoRow(
+                leftWidget:
+                    Image.asset('assets/image/koha-ditore-mini-logo.png'),
+                rightWidget: const Text('lexo gazeten',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: 'Avenir LT 55 Roman',
+                      fontWeight: FontWeight.w700,
+                    )),
+                onTap: () {},
+                backgroundColor: Colors.white,
               ),
             ],
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        icons: iconList,
-        activeIndex: _bottomNavIndex,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.verySmoothEdge,
-        onTap: (index) => setState(() => _bottomNavIndex = index),
-        backgroundColor: const Color(0xFF1E1E1E),
-        activeColor: Colors.white,
-        inactiveColor: Colors.white54,
-        iconSize: 24,
-      ),
     );
-  }
-
-  String _getTabName(int index) {
-    switch (index) {
-      case 0:
-        return 'Home';
-      case 1:
-        return 'Search';
-      case 2:
-        return 'Favorites';
-      case 3:
-        return 'Profile';
-      default:
-        return '';
-    }
   }
 }
