@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:koha/features/articles/models/article.dart';
 import 'package:koha/features/categories/models/categories.dart';
 import 'api.dart';
 
@@ -20,12 +21,6 @@ class KohaRepository {
     return response.data;
   }
 
-  Future<dynamic> getCategoryArticles(String slug, {int? page}) async {
-    final response = await _apiClient
-        .get('/category/$slug', queryParameters: {'page': page});
-    return response.data;
-  }
-
   Future<dynamic> getWeather() async {
     final response = await _apiClient.get('/weather');
     return response.data;
@@ -41,15 +36,35 @@ class KohaRepository {
     return response.data;
   }
 
-  Future<List<Category>> getCategories() async {
-    final response = await _apiClient.get('/categories');
-    List<dynamic> data = response.data;
-    return data.map((item) => Category.fromJson(item)).toList();
-  }
-
   Future<dynamic> getArticle(String id) async {
     final response = await _apiClient.get('/article/$id');
     return response.data;
+  }
+
+  Future<List<Category>> getCategories() async {
+    try {
+      print('Fetching categories...');
+      final response = await _apiClient.get('/categories');
+      // print('Categories response: ${response.data}');
+      List<dynamic> data = response.data;
+      return data.map((item) => Category.fromJson(item)).toList();
+    } catch (e) {
+      print('Error fetching categories: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Article>> getCategoryArticles(int categoryId) async {
+    try {
+      print('Fetching articles for category $categoryId...');
+      final response = await _apiClient.get('/category/$categoryId');
+      // print('Category articles response: ${response.data}');
+      List<dynamic> data = response.data;
+      return data.map((item) => Article.fromJson(item)).toList();
+    } catch (e) {
+      print('Error fetching category articles: $e');
+      rethrow;
+    }
   }
 
   Future<dynamic> getArchive({String? date, String? category}) async {

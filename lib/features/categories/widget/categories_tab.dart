@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:koha/features/articles/notifiers/category_article_notifier.dart';
+import 'package:koha/features/articles/widgets/categories_article_widget.dart';
 import 'package:koha/features/categories/notifiers/categories_notifier.dart';
 import 'package:koha/features/categories/models/categories.dart';
 
 class CategoryTabs extends ConsumerStatefulWidget {
-  const CategoryTabs({Key? key}) : super(key: key);
+  const CategoryTabs({super.key});
 
   @override
   _CategoryTabsState createState() => _CategoryTabsState();
@@ -31,11 +33,19 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
         List<Category> parentCategories =
             categories.where((category) => category.parentId == null).toList();
 
+        if (ref.read(categoryArticlesProvider).value == null &&
+            parentCategories.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref
+                .read(categoryArticlesProvider.notifier)
+                .getArticles(parentCategories[0].id);
+          });
+        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 54,
+              height: 55,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: parentCategories.length,
@@ -47,6 +57,9 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                         _selectedParentIndex = index;
                         _selectedChildIndex = -1;
                       });
+                      ref
+                          .read(categoryArticlesProvider.notifier)
+                          .getArticles(category.id);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -78,9 +91,11 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                 },
               ),
             ),
+            if (parentCategories[_selectedParentIndex].children.isEmpty)
+              Text('Its you en', style: TextStyle(color: Colors.white)),
             if (parentCategories[_selectedParentIndex].children.isNotEmpty)
               Container(
-                height: 40,
+                height: 35,
                 color: Colors.white,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -94,48 +109,48 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                         setState(() {
                           _selectedChildIndex = index;
                         });
+                        ref
+                            .read(categoryArticlesProvider.notifier)
+                            .getArticles(childCategory.id);
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: _selectedChildIndex == index
-                                  ? Colors.black
-                                  : Colors.transparent,
-                              width: 1,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 4),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: _selectedChildIndex == index
+                                    ? Colors.black
+                                    : Colors.transparent,
+                                width: 1,
+                              ),
                             ),
                           ),
-                        ),
-                        child: Text(
-                          childCategory.name,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Avenir LT 55 Roman',
-                            fontWeight: _selectedChildIndex == index
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
+                          child: Center(
+                            child: Text(
+                              childCategory.name,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Avenir LT 55 Roman',
+                                fontWeight: _selectedChildIndex == index
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          )),
                     );
                   },
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _selectedChildIndex != -1
-                    ? 'Content for ${parentCategories[_selectedParentIndex].children[_selectedChildIndex].name}'
-                    : 'Content for ${parentCategories[_selectedParentIndex].name}',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Avenir LT 55 Roman',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+            CategoryArticlesWidget(
+              key: ValueKey(
+                  '${parentCategories[_selectedParentIndex].id}-$_selectedChildIndex'),
+              categoryId: _selectedChildIndex != -1
+                  ? parentCategories[_selectedParentIndex]
+                      .children[_selectedChildIndex]
+                      .id
+                  : parentCategories[_selectedParentIndex].id,
             ),
           ],
         );

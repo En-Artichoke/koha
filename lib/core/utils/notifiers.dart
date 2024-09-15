@@ -38,16 +38,6 @@ class KohaNotifier extends StateNotifier<AsyncValue<dynamic>> {
     }
   }
 
-  Future<void> getCategoryArticles(String slug, {int? page}) async {
-    state = const AsyncValue.loading();
-    try {
-      final data = await _repository.getCategoryArticles(slug, page: page);
-      state = AsyncValue.data(data);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
   Future<void> getWeatherAndAqi() async {
     state = const AsyncValue.loading();
     try {
