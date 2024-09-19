@@ -4,6 +4,7 @@ import 'package:koha/features/articles/notifiers/category_article_notifier.dart'
 import 'package:koha/features/articles/widgets/categories_article_widget.dart';
 import 'package:koha/features/categories/notifiers/categories_notifier.dart';
 import 'package:koha/features/categories/models/categories.dart';
+import '../../home/widgets/initial_content_widget.dart';
 
 class CategoryTabs extends ConsumerStatefulWidget {
   const CategoryTabs({super.key});
@@ -13,7 +14,7 @@ class CategoryTabs extends ConsumerStatefulWidget {
 }
 
 class _CategoryTabsState extends ConsumerState<CategoryTabs> {
-  int _selectedParentIndex = 0;
+  int _selectedParentIndex = -1;
   int _selectedChildIndex = -1;
 
   @override
@@ -91,9 +92,9 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                 },
               ),
             ),
-            if (parentCategories[_selectedParentIndex].children.isEmpty)
-              Text('Its you en', style: TextStyle(color: Colors.white)),
-            if (parentCategories[_selectedParentIndex].children.isNotEmpty)
+            if (_selectedParentIndex != -1 &&
+                _selectedParentIndex < parentCategories.length &&
+                parentCategories[_selectedParentIndex].children.isNotEmpty)
               Container(
                 height: 35,
                 color: Colors.white,
@@ -116,16 +117,6 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                       child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 4),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: _selectedChildIndex == index
-                                    ? Colors.black
-                                    : Colors.transparent,
-                                width: 1,
-                              ),
-                            ),
-                          ),
                           child: Center(
                             child: Text(
                               childCategory.name,
@@ -143,15 +134,20 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                   },
                 ),
               ),
-            CategoryArticlesWidget(
-              key: ValueKey(
-                  '${parentCategories[_selectedParentIndex].id}-$_selectedChildIndex'),
-              categoryId: _selectedChildIndex != -1
-                  ? parentCategories[_selectedParentIndex]
-                      .children[_selectedChildIndex]
-                      .id
-                  : parentCategories[_selectedParentIndex].id,
-            ),
+            if (_selectedParentIndex == -1) ...[
+              const InitialContentWidget(),
+            ],
+            if (_selectedParentIndex != -1 &&
+                _selectedParentIndex < parentCategories.length)
+              CategoryArticlesWidget(
+                key: ValueKey(
+                    '${parentCategories[_selectedParentIndex].id}-$_selectedChildIndex'),
+                categoryId: _selectedChildIndex != -1
+                    ? parentCategories[_selectedParentIndex]
+                        .children[_selectedChildIndex]
+                        .id
+                    : parentCategories[_selectedParentIndex].id,
+              ),
           ],
         );
       },

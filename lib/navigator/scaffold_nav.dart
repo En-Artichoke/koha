@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:koha/core/widgets/drawer.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   const ScaffoldWithNavBar({super.key, required this.child});
@@ -10,15 +11,26 @@ class ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const DrawerContent(),
+      drawerEnableOpenDragGesture: false,
       appBar: AppBar(
         leadingWidth: 30,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 3),
-          child: SvgPicture.asset(
-            'assets/image/menu-icon.svg',
-            width: 21,
-            height: 14,
-          ),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 3),
+                child: SvgPicture.asset(
+                  'assets/image/menu-icon.svg',
+                  width: 21,
+                  height: 14,
+                ),
+              ),
+              onTap: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
         ),
         actions: [
           IconButton(

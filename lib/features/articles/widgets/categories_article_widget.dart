@@ -20,98 +20,110 @@ class CategoryArticlesWidget extends ConsumerWidget {
     return articlesState.when(
       data: (articles) {
         final currentCategoryArticles = articles
-            .where((article) => article.categoryId == categoryId)
+            .where((article) => article.category.id == categoryId)
             .toList();
 
-        return SizedBox(
-          height: 500,
-          child: ListView.builder(
-            itemCount: currentCategoryArticles.length,
-            itemBuilder: (context, index) {
-              final article = currentCategoryArticles[index];
-              if (index == 0) {
-                // First article with larger image
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (article.media.isNotEmpty)
-                      Image.network(
-                        article.media.first.auto,
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${_getCategoryName(article.categoryId)} • ${_formatTime(article.publishedAt)}',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            article.title,
-                            style: const TextStyle(
-                              color: Color(0xFFE8E8E8),
-                              fontSize: 16,
-                              fontFamily: 'Avenir LT 55 Roman',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                // Other articles
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (article.media.isNotEmpty)
-                        Image.network(
-                          article.media.first.thumb,
-                          width: 62,
-                          height: 62,
-                          fit: BoxFit.cover,
-                        ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
+        return Column(
+          children: [
+            const Divider(
+              endIndent: 18,
+              indent: 18,
+            ),
+            Padding(
+                padding: const EdgeInsets.only(left: 28, right: 28),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    itemCount: currentCategoryArticles.length,
+                    itemBuilder: (context, index) {
+                      final article = currentCategoryArticles[index];
+                      if (index == 0) {
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${_getCategoryName(article.categoryId)} • ${_formatTime(article.publishedAt)}',
-                              style: const TextStyle(
-                                color: Color(0xFF888888),
-                                fontSize: 12,
-                                fontFamily: 'Avenir LT 55 Roman',
-                                fontWeight: FontWeight.w400,
+                            if (article.media.isNotEmpty)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(2),
+                                child: Image.network(
+                                  article.media.first.auto,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              article.title,
-                              style: const TextStyle(
-                                color: Color(0xFFE8E8E8),
-                                fontSize: 14,
-                                fontFamily: 'Avenir LT 55 Roman',
-                                fontWeight: FontWeight.w400,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${_getCategoryName(article.category.id)} • ${_formatTime(article.publishedAt)}',
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    article.title,
+                                    style: const TextStyle(
+                                      color: Color(0xFFE8E8E8),
+                                      fontSize: 16,
+                                      fontFamily: 'Avenir LT 55 Roman',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
+                        );
+                      } else {
+                        // Other articles
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (article.media.isNotEmpty)
+                                Image.network(
+                                  article.media.first.thumb,
+                                  width: 62,
+                                  height: 62,
+                                  fit: BoxFit.cover,
+                                ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${_getCategoryName(article.category.id)} • ${_formatTime(article.publishedAt)}',
+                                      style: const TextStyle(
+                                        color: Color(0xFF888888),
+                                        fontSize: 12,
+                                        fontFamily: 'Avenir LT 55 Roman',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      article.title,
+                                      style: const TextStyle(
+                                        color: Color(0xFFE8E8E8),
+                                        fontSize: 14,
+                                        fontFamily: 'Avenir LT 55 Roman',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
                   ),
-                );
-              }
-            },
-          ),
+                ))
+          ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),

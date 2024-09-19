@@ -1,37 +1,39 @@
+import 'package:koha/features/categories/models/categories.dart';
+
 class Article {
   final int id;
-  final int categoryId;
-  final String publishedAt;
   final String title;
   final String slug;
-  final String excerpt;
+  final String publishedAt;
+  final String? excerpt;
   final String url;
   final List<Media> media;
+  final Category category;
 
   Article({
     required this.id,
-    required this.categoryId,
-    required this.publishedAt,
     required this.title,
     required this.slug,
-    required this.excerpt,
+    required this.publishedAt,
+    this.excerpt,
     required this.url,
     required this.media,
+    required this.category,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
       id: json['id'],
-      categoryId: json['category_id'],
-      publishedAt: json['published_at'],
       title: json['title'],
       slug: json['slug'],
+      publishedAt: json['published_at'],
       excerpt: json['excerpt'],
       url: json['url'],
       media: (json['media'] as List<dynamic>?)
               ?.map((e) => Media.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      category: Category.fromJson(json['category']),
     );
   }
 }

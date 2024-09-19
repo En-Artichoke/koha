@@ -6,13 +6,19 @@ class DashedBorderPainter extends CustomPainter {
   final double strokeWidth;
   final double dashWidth;
   final double dashSpace;
+  final bool bottomOnly;
+  final bool leftAndRight;
+  final bool topAndBottom;
 
   DashedBorderPainter({
     this.allSides = false,
-    this.color = Colors.grey,
+    this.color = Colors.white70,
     this.strokeWidth = 1,
     this.dashWidth = 5,
     this.dashSpace = 3,
+    this.bottomOnly = false,
+    this.leftAndRight = false,
+    this.topAndBottom = false,
   });
 
   @override
@@ -38,13 +44,33 @@ class DashedBorderPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    // Top border
-    drawDashedLine(Offset.zero, Offset(size.width, 0));
-
-    // Bottom border
-    drawDashedLine(Offset(0, size.height), Offset(size.width, size.height));
+    if (bottomOnly) {
+      drawDashedLine(Offset(0, size.height), Offset(size.width, size.height));
+    }
 
     if (allSides) {
+      // Top border
+      drawDashedLine(Offset.zero, Offset(size.width, 0));
+
+      // Bottom border
+      drawDashedLine(Offset(0, size.height), Offset(size.width, size.height));
+
+      // Left border
+      drawDashedLine(Offset.zero, Offset(0, size.height));
+
+      // Right border
+      drawDashedLine(Offset(size.width, 0), Offset(size.width, size.height));
+    }
+
+    if (topAndBottom) {
+      // Top border
+      drawDashedLine(Offset.zero, Offset(size.width, 0));
+
+      // Bottom border
+      drawDashedLine(Offset(0, size.height), Offset(size.width, size.height));
+    }
+
+    if (leftAndRight) {
       // Left border
       drawDashedLine(Offset.zero, Offset(0, size.height));
 

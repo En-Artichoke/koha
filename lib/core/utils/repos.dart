@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:koha/features/articles/models/article.dart';
 import 'package:koha/features/categories/models/categories.dart';
 import 'api.dart';
@@ -43,26 +42,20 @@ class KohaRepository {
 
   Future<List<Category>> getCategories() async {
     try {
-      print('Fetching categories...');
       final response = await _apiClient.get('/categories');
-      // print('Categories response: ${response.data}');
       List<dynamic> data = response.data;
       return data.map((item) => Category.fromJson(item)).toList();
     } catch (e) {
-      print('Error fetching categories: $e');
       rethrow;
     }
   }
 
   Future<List<Article>> getCategoryArticles(int categoryId) async {
     try {
-      print('Fetching articles for category $categoryId...');
       final response = await _apiClient.get('/category/$categoryId');
-      // print('Category articles response: ${response.data}');
       List<dynamic> data = response.data;
       return data.map((item) => Article.fromJson(item)).toList();
     } catch (e) {
-      print('Error fetching category articles: $e');
       rethrow;
     }
   }
