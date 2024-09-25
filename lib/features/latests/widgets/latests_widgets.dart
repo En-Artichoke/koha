@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:koha/features/latests/notifiers/latests_notifier.dart';
 import 'package:koha/features/latests/widgets/latests_item_widget.dart';
-import 'package:koha/core/widgets/dashed_border_painter.dart'; // Make sure to import this
+import 'package:koha/core/widgets/dashed_border_painter.dart';
 
 class LatestNewsByCategoryWidget extends ConsumerWidget {
   const LatestNewsByCategoryWidget({super.key});
@@ -39,28 +39,20 @@ class LatestNewsByCategoryWidget extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      categoryName,
-                      style: TextStyle(
-                        color: _parseColor(articles.first.category.color),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: articles.length,
                     itemBuilder: (context, articleIndex) {
-                      return ArticleListItem(
-                        article: articles[articleIndex],
-                        isFirst: index == 0 && articleIndex == 0,
-                      );
+                      return Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: ArticleListItem(
+                            article: articles[articleIndex],
+                            isFirst: index == 0 && articleIndex == 0,
+                          ));
                     },
                   ),
-                  SizedBox(height: 16), // Add some space after the last article
                 ],
               ),
             );

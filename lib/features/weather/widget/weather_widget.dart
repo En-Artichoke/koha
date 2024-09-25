@@ -33,7 +33,7 @@ class WeatherWidgetState extends ConsumerState<WeatherWidget> {
         final AQIModel aqiData = data['aqi'];
         return CustomPaint(
           painter: DashedBorderPainter(
-            allSides: false,
+            topAndBottom: true,
             color: Colors.grey,
             strokeWidth: 1,
             dashWidth: 2,

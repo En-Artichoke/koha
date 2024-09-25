@@ -9,6 +9,7 @@ class DashedBorderPainter extends CustomPainter {
   final bool bottomOnly;
   final bool leftAndRight;
   final bool topAndBottom;
+  final bool topOnly;
 
   DashedBorderPainter({
     this.allSides = false,
@@ -19,6 +20,7 @@ class DashedBorderPainter extends CustomPainter {
     this.bottomOnly = false,
     this.leftAndRight = false,
     this.topAndBottom = false,
+    this.topOnly = false,
   });
 
   @override
@@ -47,7 +49,10 @@ class DashedBorderPainter extends CustomPainter {
     if (bottomOnly) {
       drawDashedLine(Offset(0, size.height), Offset(size.width, size.height));
     }
-
+    if (topOnly) {
+      // New condition for top border only
+      drawDashedLine(Offset.zero, Offset(size.width, 0));
+    }
     if (allSides) {
       // Top border
       drawDashedLine(Offset.zero, Offset(size.width, 0));

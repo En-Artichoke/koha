@@ -86,6 +86,7 @@ flutter:
      - assets/image/sun-dim.svg
      - assets/
      - assets/image/
+     - assets/image/arrow-info.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

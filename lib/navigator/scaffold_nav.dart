@@ -57,25 +57,27 @@ class ScaffoldWithNavBar extends StatelessWidget {
         backgroundColor: Colors.black,
         selectedItemColor: Colors.white,
         unselectedItemColor: const Color(0xFF595959),
+        unselectedFontSize: 14,
         items: [
           BottomNavigationBarItem(
-            icon: SvgPicture.asset('assets/image/home-menu-icon.svg'),
+            icon: SvgPicture.asset('assets/image/home-menu-icon.svg',
+                width: 24, height: 20),
             activeIcon: SvgPicture.asset('assets/image/home-menu-icon.svg',
-                width: 24, height: 17, color: Colors.white),
+                width: 24, height: 24, color: Colors.white),
             label: 'Ballina',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset('assets/image/video-inactive.svg',
                 width: 24, height: 17),
             activeIcon: SvgPicture.asset('assets/image/video.svg',
-                width: 24, height: 17),
+                width: 24, height: 24),
             label: 'Video',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset('assets/image/live-inactive.svg',
-                width: 24, height: 17),
+                width: 24, height: 23),
             activeIcon: SvgPicture.asset('assets/image/live.svg',
-                width: 24, height: 17),
+                width: 24, height: 24),
             label: 'Live',
           ),
           BottomNavigationBarItem(
@@ -94,7 +96,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   static int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.path;
-    if (location == '/') {
+    if (location.startsWith('/home')) {
       return 0;
     }
     if (location.startsWith('/video')) {
@@ -103,16 +105,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
     if (location.startsWith('/live')) {
       return 2;
     }
-    if (location.startsWith('/profile')) {
-      return 3;
-    }
+    // We don't return 3 for profile anymore, as it's not part of this navigation
     return 0;
   }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/');
+        GoRouter.of(context).go('/home');
         break;
       case 1:
         GoRouter.of(context).go('/video');
@@ -121,6 +121,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
         GoRouter.of(context).go('/live');
         break;
       case 3:
+        // For profile, we navigate outside of the ShellRoute
         GoRouter.of(context).go('/profile');
         break;
     }

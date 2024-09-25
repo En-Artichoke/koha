@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:koha/core/widgets/info_row.dart';
+import 'package:koha/features/home/widgets/news_item.dart';
 import 'package:koha/features/latests/widgets/latests_widgets.dart';
 import 'package:koha/features/weather/widget/weather_widget.dart';
 
 class InitialContentWidget extends StatelessWidget {
-  const InitialContentWidget({Key? key}) : super(key: key);
+  const InitialContentWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class InitialContentWidget extends StatelessWidget {
             backgroundColor: const Color(0xFFE64A19),
           ),
           const SizedBox(height: 20),
-          const WeatherWidget(),
+          const NewsWidget(),
           const SizedBox(height: 20),
           InfoRow(
             leftWidget: Image.asset('assets/image/koha-ditore-mini-logo.png'),
@@ -47,6 +48,8 @@ class InitialContentWidget extends StatelessWidget {
             onTap: () {},
             backgroundColor: Colors.white,
           ),
+          const SizedBox(height: 20),
+          const WeatherWidget(),
         ],
       ),
     );

@@ -16,7 +16,7 @@ class DrawerContent extends ConsumerWidget {
       width: MediaQuery.of(context).size.width,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: const Color(0xFF1E1E1E),
+        color: const Color(0xFF03070A),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
