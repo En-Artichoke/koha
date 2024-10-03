@@ -15,6 +15,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
       drawer: const DrawerContent(),
       drawerEnableOpenDragGesture: false,
       appBar: AppBar(
+        surfaceTintColor: const Color(0xFF1E1E1E),
         leadingWidth: 30,
         leading: Builder(
           builder: (BuildContext context) {

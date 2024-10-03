@@ -59,7 +59,10 @@ class LatestNewsByCategoryWidget extends ConsumerWidget {
           }).toList(),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+          child: CircularProgressIndicator(
+        color: Colors.white,
+      )),
       error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
