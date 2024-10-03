@@ -18,60 +18,6 @@ class KohaNotifier extends StateNotifier<AsyncValue<dynamic>> {
     }
   }
 
-  Future<void> getLatest() async {
-    state = const AsyncValue.loading();
-    try {
-      final data = await _repository.getLatest();
-      state = AsyncValue.data(data);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
-  Future<void> getMostRead() async {
-    state = const AsyncValue.loading();
-    try {
-      final data = await _repository.getMostRead();
-      state = AsyncValue.data(data);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
-  Future<void> getWeatherAndAqi() async {
-    state = const AsyncValue.loading();
-    try {
-      final weatherData = await _repository.getWeather();
-      final aqiData = await _repository.getAqi();
-      state = AsyncValue.data({
-        'weather': weatherData,
-        'aqi': aqiData,
-      });
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
-  Future<void> getAqi() async {
-    state = const AsyncValue.loading();
-    try {
-      final data = await _repository.getAqi();
-      state = AsyncValue.data(data);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
-  Future<void> getIsLive() async {
-    state = const AsyncValue.loading();
-    try {
-      final data = await _repository.getIsLive();
-      state = AsyncValue.data(data);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-
   Future<void> getCategories() async {
     state = const AsyncValue.loading();
     try {

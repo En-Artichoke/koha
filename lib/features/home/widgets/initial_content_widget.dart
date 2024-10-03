@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:koha/core/widgets/info_row.dart';
+import 'package:koha/features/categories/widget/latest_category_articles_widget.dart';
+import 'package:koha/features/editor_choices/widget/editor_choices.dart';
 import 'package:koha/features/home/widgets/news_item.dart';
-import 'package:koha/features/latests/widgets/latests_widgets.dart';
 import 'package:koha/features/weather/widget/weather_widget.dart';
 
 class InitialContentWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class InitialContentWidget extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const LatestNewsByCategoryWidget(),
+          const EditorChoicesWidget(),
           const SizedBox(height: 20),
           InfoRow(
             leftWidget: const Text(
@@ -48,6 +49,8 @@ class InitialContentWidget extends StatelessWidget {
             onTap: () {},
             backgroundColor: Colors.white,
           ),
+          const SizedBox(height: 20),
+          const LatestCategoryArticlesWidget(),
           const SizedBox(height: 20),
           const WeatherWidget(),
         ],

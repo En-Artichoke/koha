@@ -1,5 +1,7 @@
 import 'package:koha/features/articles/models/article.dart';
+import 'package:koha/features/articles/models/article_details.dart';
 import 'package:koha/features/categories/models/categories.dart';
+import 'package:koha/features/categories/models/latest_category_article.dart';
 import 'api.dart';
 
 class KohaRepository {
@@ -37,6 +39,42 @@ class KohaRepository {
 
   Future<dynamic> getArticle(String id) async {
     final response = await _apiClient.get('/article/$id');
+    return response.data;
+  }
+
+  Future<ArticleDetails> getArticleDetail(String id) async {
+    try {
+      final response = await _apiClient.get('/article/$id');
+      return ArticleDetails.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, List<LatestCategoryArticle>>>
+      getLatestFromCategories() async {
+    final categoryIds = [18, 6, 21];
+    Map<String, List<LatestCategoryArticle>> result = {};
+
+    for (var id in categoryIds) {
+      try {
+        final response = await _apiClient.get('/category/$id');
+        List<dynamic> data = response.data;
+        List<LatestCategoryArticle> articles = data
+            .map((item) => LatestCategoryArticle.fromJson(item))
+            .take(3)
+            .toList();
+        result[id.toString()] = articles;
+      } catch (e) {
+        print('Error fetching articles for category $id: $e');
+        result[id.toString()] = [];
+      }
+    }
+    return result;
+  }
+
+  Future<dynamic> getVideos(String id) async {
+    final response = await _apiClient.get('/video');
     return response.data;
   }
 

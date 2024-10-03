@@ -1,3 +1,5 @@
+import '../../categories/models/categories.dart';
+
 class MostReadArticle {
   final int id;
   final String title;

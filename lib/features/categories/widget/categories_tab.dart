@@ -16,6 +16,7 @@ class CategoryTabs extends ConsumerStatefulWidget {
 class _CategoryTabsState extends ConsumerState<CategoryTabs> {
   int _selectedParentIndex = -1;
   int _selectedChildIndex = -1;
+  bool _initialContentShown = true;
 
   @override
   void initState() {
@@ -23,6 +24,57 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(categoryProvider.notifier).getCategories();
     });
+  }
+
+  Future<bool> _categoryHasArticles(int categoryId) async {
+    await ref.read(categoryArticlesProvider.notifier).getArticles(categoryId);
+    final articlesState = ref.read(categoryArticlesProvider);
+    final hasArticles = articlesState.maybeWhen(
+      data: (articles) => articles
+          .where((article) => article.category.id == categoryId)
+          .isNotEmpty,
+      orElse: () => false,
+    );
+    return hasArticles;
+  }
+
+  Future<void> _selectCategory(Category category,
+      {bool isChild = false}) async {
+    if (await _categoryHasArticles(category.id)) {
+      _updateSelectedCategory(category, isChild);
+    } else if (category.children.isNotEmpty) {
+      for (var child in category.children) {
+        if (await _categoryHasArticles(child.id)) {
+          _updateSelectedCategory(child, true);
+          break;
+        }
+      }
+    } else {}
+  }
+
+  void _updateSelectedCategory(Category category, bool isChild) {
+    setState(() {
+      _initialContentShown = false;
+      if (!isChild) {
+        _selectedParentIndex = ref
+            .read(categoryProvider)
+            .value!
+            .indexWhere((c) => c.id == category.id);
+        _selectedChildIndex = -1;
+      } else {
+        _selectedParentIndex = ref
+            .read(categoryProvider)
+            .value!
+            .indexWhere((c) => c.id == category.parentId);
+        _selectedChildIndex = ref
+            .read(categoryProvider)
+            .value!
+            .firstWhere((c) => c.id == category.parentId)
+            .children
+            .indexWhere((c) => c.id == category.id);
+      }
+    });
+    ref.read(categoryArticlesProvider.notifier).getArticles(category.id);
   }
 
   @override
@@ -34,14 +86,6 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
         List<Category> parentCategories =
             categories.where((category) => category.parentId == null).toList();
 
-        if (ref.read(categoryArticlesProvider).value == null &&
-            parentCategories.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref
-                .read(categoryArticlesProvider.notifier)
-                .getArticles(parentCategories[0].id);
-          });
-        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -53,15 +97,7 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                 itemBuilder: (context, index) {
                   final category = parentCategories[index];
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedParentIndex = index;
-                        _selectedChildIndex = -1;
-                      });
-                      ref
-                          .read(categoryArticlesProvider.notifier)
-                          .getArticles(category.id);
-                    },
+                    onTap: () => _selectCategory(category),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 16),
@@ -106,14 +142,8 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                     final childCategory =
                         parentCategories[_selectedParentIndex].children[index];
                     return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedChildIndex = index;
-                        });
-                        ref
-                            .read(categoryArticlesProvider.notifier)
-                            .getArticles(childCategory.id);
-                      },
+                      onTap: () =>
+                          _selectCategory(childCategory, isChild: true),
                       child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 4),
@@ -134,10 +164,9 @@ class _CategoryTabsState extends ConsumerState<CategoryTabs> {
                   },
                 ),
               ),
-            if (_selectedParentIndex == -1) ...[
-              const InitialContentWidget(),
-            ],
-            if (_selectedParentIndex != -1 &&
+            if (_initialContentShown)
+              const InitialContentWidget()
+            else if (_selectedParentIndex != -1 &&
                 _selectedParentIndex < parentCategories.length)
               CategoryArticlesWidget(
                 key: ValueKey(
